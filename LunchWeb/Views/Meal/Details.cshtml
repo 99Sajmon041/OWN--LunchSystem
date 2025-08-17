@@ -1,0 +1,45 @@
+﻿@model LunchWeb.ViewModels.MealViewModels.MealViewModel
+
+@{
+    ViewData["Title"] = "Detail jídla";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <h2 class="text-center mb-4">Detail jídla</h2>
+
+            <div class="card shadow p-4 rounded-3">
+                <div class="row g-4 align-items-start">
+                    <div class="col-md-5 text-center">
+                        <img src="@Model.ImageUrl"
+                             alt="@Model.FoodName"
+                             class="img-fluid rounded border"
+                             style="max-height: 320px; object-fit: cover;" />
+                    </div>
+                    <div class="col-md-7">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8">@Model.Id</dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FoodName)</dt>
+                            <dd class="col-sm-8">@Model.FoodName</dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FoodDescription)</dt>
+                            <dd class="col-sm-8">@Model.FoodDescription</dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Price)</dt>
+                            <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a asp-action="Index" class="btn btn-success">Zpět na seznam</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

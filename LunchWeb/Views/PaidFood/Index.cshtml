@@ -1,0 +1,116 @@
+﻿@model PaidFoodWeeklyViewModel
+@{
+    ViewData["Title"] = "Objednávky jídel";
+}
+
+<div class="row align-items-center mb-4">
+    <div class="col-12 col-md-4"></div>
+
+    <div class="col-12 col-md-4 text-center">
+        <h2 class="fw-bold m-0">@ViewData["Title"]</h2>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-end gap-2 mt-2 mt-md-0">
+        <span id="pf-total" class="badge bg-info rounded-pill px-3 py-2">
+            Výběr: <span id="pf-total-value">0,00</span> Kč
+        </span>
+        <span class="badge bg-success rounded-pill px-3 py-2">
+            Kredit: <strong>@(Model.CurrentBalance?.ToString("0.00") ?? "0,00") Kč</strong>
+        </span>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form asp-action="Index" method="get" class="m-0">
+        <input type="hidden" name="startOfWeek" value="@Model.StartOfWeek.AddDays(-7).ToString("yyyy-MM-dd")" />
+        <button type="submit" class="btn btn-outline-success fw-bold" @(Model.CanGoBack ? null : "disabled")>
+            &laquo; Předchozí týden
+        </button>
+    </form>
+
+    <span class="badge @(Model.CanEdit ? "bg-success" : "bg-secondary") fs-6 px-3 py-2 text-center">
+        @(Model.CanEdit
+                ? $"Tento týden je editovatelný. Zamčený týden: {Model.LockedWeekStart:dd.MM.}–{Model.LockedWeekStart.AddDays(6):dd.MM.}. (Objednávat lze od {Model.FirstEditableWeekStart:dd.MM.})"
+                : $"Tento týden není editovatelný. Zamčený týden: {Model.LockedWeekStart:dd.MM.}–{Model.LockedWeekStart.AddDays(6):dd.MM.}. (Objednávat lze od {Model.FirstEditableWeekStart:dd.MM.})")
+    </span>
+
+    <form asp-action="Index" method="get" class="m-0">
+        <input type="hidden" name="startOfWeek" value="@Model.StartOfWeek.AddDays(7).ToString("yyyy-MM-dd")" />
+        <button type="submit" class="btn btn-outline-success fw-bold">
+            Následující týden &raquo;
+        </button>
+    </form>
+</div>
+
+@if (!Model.CanEdit)
+{
+    <div class="alert alert-info text-center fw-bold">
+        Pro tento týden není možné objednávat. Zamčený je vždy bezprostředně následující týden.
+        Objednávat lze od @Model.FirstEditableWeekStart.ToShortDateString() dále.
+    </div>
+}
+
+<form asp-action="Save" method="post">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StartOfWeek)
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th style="width: 220px;">Datum</th>
+                <th>Jídlo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.ItemsPerDay.Count; i++)
+            {
+                var day = Model.ItemsPerDay[i];
+                <tr>
+                    <td class="py-3">
+                        @day.Date.ToString("dd.MM.yyyy")
+                        <input type="hidden" name="ItemsPerDay[@i].Date" value="@(Model.ItemsPerDay[i].Date.ToString("yyyy-MM-dd"))" />
+                    </td>
+                    <td class="py-3">
+                        @if (day.Options != null && day.Options.Any())
+                        {
+                            <div class="d-flex gap-2 align-items-start">
+                                <select asp-for="ItemsPerDay[@i].SelectedDailyOfferId"
+                                        asp-items="Model.ItemsPerDay[@i].Options"
+                                        class="form-select"
+                                        disabled="@(Model.CanEdit ? null : "disabled")"
+                                        data-offer-select="true">
+                                    <option value="">-- nevybráno --</option>
+                                </select>
+
+                                <button type="button"
+                                        class="btn btn-outline-success"
+                                        data-detail-btn="true"
+                                        data-week="@Model.StartOfWeek.ToString("yyyy-MM-dd")"
+                                        @(Model.ItemsPerDay[i].SelectedDailyOfferId.HasValue ? null : "disabled")>
+                                    Detail
+                                </button>
+                            </div>
+
+                            @if (!Model.CanEdit)
+                            {
+                                @Html.HiddenFor(m => m.ItemsPerDay[i].SelectedDailyOfferId)
+                            }
+                        }
+                        else
+                        {
+                            <select class="form-select" disabled>
+                                <option>Žádná nabídka</option>
+                            </select>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success mb-4" @(Model.CanSave ? null : "disabled")>
+        Uložit objednávky
+    </button>
+</form>
+
+<div id="modalHost" data-meal-detail-url="@Url.Action("MealDetail", "PaidFood")"></div>

@@ -1,0 +1,41 @@
+﻿@using LunchWeb.ViewModels.AccountViewModels
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Můj profil";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <h2 class="text-center mb-4">Můj profil</h2>
+
+            <div class="card shadow p-4 rounded-3">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(m => m.FullName):</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+
+                    <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(m => m.Email):</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(m => m.IsAdult):</dt>
+                    <dd class="col-sm-8">@(Model.IsAdult ? "Ano" : "Ne")</dd>
+
+                    <dt class="col-sm-4 fw-bold">@Html.DisplayNameFor(m => m.Credit):</dt>
+                    <dd class="col-sm-8">@Model.Credit.ToString("C")</dd>
+
+                    <dt class="col-sm-4 fw-bold">Role:</dt>
+                    <dd class="col-sm-8">@Model.Role.ToString()</dd>
+                </dl>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="TopUpCredit" class="btn btn-info w-50 me-2">Dobít kredit</a>
+                    <a asp-action="ChangePassword" class="btn btn-success w-50">Změnit heslo</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

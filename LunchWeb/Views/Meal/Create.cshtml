@@ -1,0 +1,52 @@
+﻿@model MealFormViewModel
+
+@{
+    ViewData["Title"] = "Vytvořit jídlo";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <h2 class="text-center mb-4">Vytvořit nové jídlo</h2>
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="FoodName" class="form-label"></label>
+                    <input asp-for="FoodName" class="form-control" />
+                    <span asp-validation-for="FoodName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FoodDescription" class="form-label"></label>
+                    <textarea asp-for="FoodDescription" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="FoodDescription" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" type="number" value="0" min="20" max="1000" step="0.01" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ImageFile" class="form-label">Obrázek jídla</label>
+                    <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success w-50 me-2">Vytvořit</button>
+                    <a asp-action="Index" class="btn btn-warning w-50">Zrušit</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

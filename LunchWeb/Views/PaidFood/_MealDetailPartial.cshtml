@@ -1,0 +1,46 @@
+﻿@model MealOptionVm
+
+<div class="modal fade" id="mealDetailModal" tabindex="-1" aria-labelledby="mealDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold" id="mealDetailModalLabel">@Model.FoodName</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="col-md-5 text-center mb-3 mb-md-0">
+                            <img src="@Model.ImageUrl" alt="@Model.FoodName"
+                                 class="img-fluid rounded shadow-sm"
+                                 style="max-height: 250px; object-fit: cover;" />
+                        </div>
+                    }
+                    <div class="col-md-7 d-flex flex-column justify-content-center">
+                        @if (Model.FinalPriceAfterDiscount < Model.FinalPrice)
+                        {
+                            <p class="fs-6 text-muted mb-1">
+                                <span class="text-decoration-line-through">
+                                    @Model.FinalPrice.ToString("0.00") Kč
+                                </span>
+                            </p>
+                            <p class="fs-4 fw-bold text-success mb-0">
+                                Vaše cena: @Model.FinalPriceAfterDiscount.ToString("0.00") Kč
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="fs-4 fw-bold text-success mb-0">
+                                Cena: @Model.FinalPrice.ToString("0.00") Kč
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Zavřít</button>
+            </div>
+        </div>
+    </div>
+</div>

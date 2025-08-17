@@ -1,0 +1,15 @@
+﻿@{
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Přístup zamítnut</h4>
+        <p>Nemáte oprávnění k zobrazení této stránky.</p>
+    </div>
+
+    <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary me-2">Domů</a>
+    @if (!string.IsNullOrEmpty(returnUrl))
+    {
+        <a href="@returnUrl" class="btn btn-primary">Zpět</a>
+    }
+</div>

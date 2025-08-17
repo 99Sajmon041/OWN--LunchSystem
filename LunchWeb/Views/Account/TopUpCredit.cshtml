@@ -1,0 +1,44 @@
+﻿@model LunchWeb.ViewModels.AccountViewModels.TopUpCreditViewModel
+
+@{
+    ViewData["Title"] = "Dobít kredit";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-6">
+            <h2 class="text-center mb-4">Dobít kredit</h2>
+
+            <form asp-action="TopUpCredit" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label">ID uživatele</label>
+                    <input class="form-control" value="@Model.Id" disabled />
+                    <input type="hidden" asp-for="Id" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Celé jméno</label>
+                    <input class="form-control" value="@Model.FullName" disabled />
+                    <input type="hidden" asp-for="FullName" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label"></label>
+                    <input asp-for="Amount" class="form-control" type="number" step="0.01" min="100" max="5000" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Profile" asp-controller="Account" class="btn btn-warning w-50 me-2">Zpět</a>
+                    <button type="submit" class="btn btn-success w-50">Dobít</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

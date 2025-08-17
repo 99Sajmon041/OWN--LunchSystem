@@ -1,0 +1,51 @@
+﻿@model LunchWeb.ViewModels.CustomerViewModels.CustomerViewModel
+
+@{
+    ViewData["Title"] = "Detail uživatele";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <h2 class="text-center mb-4">Detail uživatele</h2>
+
+            <div class="card shadow p-4 rounded-3">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">ID</dt>
+                    <dd class="col-sm-8">@Model.Id</dd>
+
+                    <dt class="col-sm-4">Křestní jméno</dt>
+                    <dd class="col-sm-8">@Model.FirstName</dd>
+
+                    <dt class="col-sm-4">Příjmení</dt>
+                    <dd class="col-sm-8">@Model.LastName</dd>
+
+                    <dt class="col-sm-4">E-mail</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Datum narození</dt>
+                    <dd class="col-sm-8">@Model.DateOfBirth.ToString("dd.MM.yyyy")</dd>
+
+                    <dt class="col-sm-4">Role</dt>
+                    <dd class="col-sm-8">@Model.Role</dd>
+
+                    <dt class="col-sm-4">Dospělý</dt>
+                    <dd class="col-sm-8">@(Model.IsAdult ? "Ano" : "Ne")</dd>
+
+                    <dt class="col-sm-4">Aktivní účet</dt>
+                    <dd class="col-sm-8">@(Model.Active ? "Ano" : "Ne")</dd>
+
+                    <dt class="col-sm-4">Kredit</dt>
+                    <dd class="col-sm-8">@Model.Credit.ToString("C")</dd>
+
+                    <dt class="col-sm-4">ID karty</dt>
+                    <dd class="col-sm-8">@Model.CardId</dd>
+                </dl>
+
+                <div class="mt-4 text-end">
+                    <a asp-action="Index" class="btn btn-success">Zpět na seznam</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

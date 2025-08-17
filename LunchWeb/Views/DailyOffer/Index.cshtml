@@ -1,0 +1,84 @@
+﻿@model LunchWeb.ViewModels.DailyOfferViewModels.DailyOfferWeeklyViewModel
+@{
+    ViewData["Title"] = "Týdenní nabídka";
+}
+<h2 class="text-center mb-4 fw-bold">@ViewData["Title"]</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form asp-action="Index" method="get" class="m-0">
+        <input type="hidden" name="startOfWeek" value="@Model.StartOfWeek.AddDays(-7).ToString("yyyy-MM-dd")" />
+        <button type="submit" class="btn btn-outline-success fw-bold" @(Model.CanGoBack ? null : "disabled")>
+            &laquo; Předchozí týden
+        </button>
+    </form>
+
+    <span class="badge @(Model.CanEditEntireWeek ? "bg-success" : "bg-secondary") fs-6 px-3 py-2">
+        @(Model.CanEditEntireWeek
+                ? $"Tento týden je editovatelný. Zamčený týden: {Model.LockedWeekStart:dd.MM.}–{Model.LockedWeekStart.AddDays(6):dd.MM.}. (Editovat lze od {Model.FirstEditableWeekStart:dd.MM.})"
+                : $"Tento týden není editovatelný. Zamčený týden: {Model.LockedWeekStart:dd.MM.}–{Model.LockedWeekStart.AddDays(6):dd.MM.}. (Editovat lze od {Model.FirstEditableWeekStart:dd.MM.})")
+    </span>
+
+    <form asp-action="Index" method="get" class="m-0">
+        <input type="hidden" name="startOfWeek" value="@Model.StartOfWeek.AddDays(7).ToString("yyyy-MM-dd")" />
+        <button type="submit" class="btn btn-outline-success fw-bold">
+            Následující týden &raquo;
+        </button>
+    </form>
+</div>
+
+@if (!Model.CanEditEntireWeek)
+{
+    <div class="alert alert-info text-center fw-bold">
+        Tento týden nelze upravit. Zamčený je vždy bezprostředně následující týden. Upravovat lze od @Model.FirstEditableWeekStart.ToShortDateString() dále.
+    </div>
+}
+
+<form asp-action="Save" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="StartOfWeek" />
+
+    <div style="display:flex; justify-content:center;">
+        <div style="width:90%; max-width:1400px;">
+            <table class="table table-bordered table-hover align-middle w-100">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width:15%;">Den</th>
+                        <th style="width:28%;">Jídlo 1</th>
+                        <th style="width:28%;">Jídlo 2</th>
+                        <th style="width:28%;">Jídlo 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.ItemsPerDay.Count; i++)
+                    {
+                        var day = Model.ItemsPerDay[i];
+                        <tr class="@(Model.IsCurrentWeek ? "table-success" : "")">
+                            <td class="fw-bold text-center">
+                                @day.Date.ToString("dddd dd.MM.")
+                                <input type="hidden" asp-for="ItemsPerDay[@i].Date" />
+                            </td>
+                            @for (int j = 0; j < day.Meals.Count; j++)
+                            {
+                                <td>
+                                    <select asp-for="ItemsPerDay[@i].Meals[@j].MealId"
+                                            asp-items="Model.ItemsPerDay[@i].Meals[@j].MealOptions"
+                                            class="form-select"
+                                            disabled="@(Model.CanEditEntireWeek ? null : "disabled")">
+                                        <option value="">-- Vyberte jídlo --</option>
+                                    </select>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (Model.CanEditEntireWeek)
+            {
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success fw-bold">💾 Uložit změny</button>
+                </div>
+            }
+        </div>
+    </div>
+</form>

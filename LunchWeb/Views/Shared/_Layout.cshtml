@@ -1,0 +1,131 @@
+﻿@using Lunch.Domain.Enums
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject UserManager<Customer> UserManager
+@inject SignInManager<Customer> SignInManager
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <title>Obědový systém</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header class="mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+            <a class="navbar-brand" href="/">Obědový systém</a>
+
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav mx-auto d-flex flex-row gap-3 justify-content-center">
+                    @if (User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.MasterKucharka)) || User.IsInRole(nameof(Role.Kucharka)))
+                    {
+                        @if (User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.MasterKucharka)))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle custom-nav-link"
+                                   href="#" id="usersDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Uživatelé
+                                </a>
+                                <ul class="dropdown-menu" data-bs-theme="dark" aria-labelledby="usersDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Customer" asp-action="Index">
+                                            Správa uživatelů
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Discount" asp-action="Index">
+                                            Slevy podle rolí
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="nav-item custom-nav-item">
+                            <a class="nav-link custom-nav-link" asp-controller="Meal" asp-action="Index">Obědy</a>
+                        </li>
+                        <li class="nav-item custom-nav-item">
+                            <a class="nav-link custom-nav-link" asp-controller="DailyOffer" asp-action="Index">Týdenní menu</a>
+                        </li>
+                        @if (User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.MasterKucharka)))
+                        {
+                            <li class="nav-item custom-nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="WrittenOffFood" asp-action="Index">Odepsané obědy</a>
+                            </li>
+                        }
+                    }
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <li class="nav-item custom-nav-item">
+                            <a class="nav-link custom-nav-link" asp-controller="PaidFood" asp-action="Index">Výběr obědů</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="d-flex align-items-center text-white">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var userName = User.FindFirstValue(ClaimTypes.Name);
+                    var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+                    <span class="me-3">
+                        <a asp-controller="Account" asp-action="Profile" class="profile-link text-white text-decoration-none">
+                            <strong>@userName</strong> (@userRole)
+                        </a>
+                    </span>
+                    <form asp-action="LogOut" asp-controller="Account" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light btn-sm">Odhlásit se</button>
+                    </form>
+                }
+            </div>
+        </nav>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success w-100 border-0 rounded-0"
+                style="padding-left: 10%; padding-top: 0.75rem; padding-bottom: 0.75rem; margin-bottom: 0;">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["InfoMessage"] != null)
+        {
+            <div class="alert alert-info w-100 border-0 rounded-0"
+                style="padding-left: 10%; padding-top: 0.75rem; padding-bottom: 0.75rem; margin-bottom: 0;">
+                @TempData["InfoMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger w-100 border-0 rounded-0"
+                style="padding-left: 10%; padding-top: 0.75rem; padding-bottom: 0.75rem; margin-bottom: 0;">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(TempData["PlanningDanger"]?.ToString()) && (User.IsInRole(nameof(Role.Admin)) || User.IsInRole(nameof(Role.Kucharka)) || User.IsInRole(nameof(Role.MasterKucharka))))
+        {
+            <div class="alert alert-warning w-100 border-0 rounded-0"
+                style="padding-left: 10%; padding-top: 0.75rem; padding-bottom: 0.75rem; margin-bottom: 0;">
+                @TempData["PlanningDanger"]
+            </div>
+        }
+
+    </header>
+
+    <main class="container-fluid px-5 flex-grow-1 pb-5">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3">
+        &copy; @DateTime.Now.Year - Obědový systém
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-..." crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

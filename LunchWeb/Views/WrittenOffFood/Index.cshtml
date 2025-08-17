@@ -1,0 +1,48 @@
+﻿@model WrittenOffFoodListViewModel
+
+@{
+    ViewData["Title"] = "Čipnuté obědy";
+}
+
+<h2 class="text-center mb-4 fw-bold">Přehled čipnutých obědů</h2>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-light text-center">
+        <tr>
+            <th>#</th>
+            <th>Jméno zákazníka</th>
+            <th>Role</th>
+            <th>Název jídla</th>
+            <th>Varianta</th>
+            <th>Datum</th>
+            <th>Čas čipnutí</th>
+            <th>Cena po slevě</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td class="text-center">@item.Id</td>
+                <td>@item.FullName</td>
+                <td>@item.RoleName</td>
+                <td>@item.Foodname</td>
+                <td class="text-center">@item.LunchOption</td>
+                <td class="text-center">@item.Date.ToString("dd.MM.yyyy")</td>
+                <td class="text-center">@item.TimeOfCreate.ToString("HH:mm")</td>
+                <td class="text-end">@item.FinalPrice.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Stránkování">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

@@ -1,0 +1,38 @@
+# Build výstupy
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+# VS/Rider cache
+.vs/
+.vscode/
+.idea/
+
+# Uživatelská nastavení
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet a tools
+*.nupkg
+packages/
+*.snupkg
+
+# Publikace
+publish/
+*.Publish.xml
+
+# Překlady/Analýza
+*.psess
+*.vsp
+*.vspx
+
+# OS
+Thumbs.db
+.DS_Store
+
+appsettings.Development.json
+secrets.json
+*.local.json
